@@ -1,0 +1,14 @@
+README.md
+pyproject.toml
+src/ez2z/__init__.py
+src/ez2z/album.py
+src/ez2z/artist.py
+src/ez2z/ids.py
+src/ez2z/insertDB.py
+src/ez2z/song.py
+src/ez2z/track.py
+src/ez2z.egg-info/PKG-INFO
+src/ez2z.egg-info/SOURCES.txt
+src/ez2z.egg-info/dependency_links.txt
+src/ez2z.egg-info/requires.txt
+src/ez2z.egg-info/top_level.txt
