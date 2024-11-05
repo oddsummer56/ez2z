@@ -4,9 +4,9 @@ from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
 import csv
 import os
-from ez2z.ids import get_song_id, get_album_id
-from ez2z.artist import get_artist_details
-from ez2z.album import get_album_details
+from ids import get_song_id, get_album_id
+from artist import get_artist_details
+from album import get_album_details
 from datetime import datetime
 import insertDB
 
@@ -82,7 +82,7 @@ def main():
     chrome_options = Options()
     driver = webdriver.Chrome(options=chrome_options)
 
-    keyword = "pleasure shop"
+    keyword = "즐거운"
     song_id = get_song_id(driver, keyword)  
     artist_name, artist_id = get_artist_details(song_id)
     album_id = get_album_id(driver, keyword)  

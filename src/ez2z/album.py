@@ -2,8 +2,6 @@ import requests
 from bs4 import BeautifulSoup
 from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
-import csv
-import os
 from ids import get_song_id, get_album_id
 from artist import get_artist_details
 from datetime import datetime
@@ -55,20 +53,24 @@ def main():
     chrome_options = Options()
     driver = webdriver.Chrome(options=chrome_options)
 
-    keyword = "옥탑방" ###################day6 finale 안됨#######################
+    keyword = "히치하이킹" 
     song_id = get_song_id(driver, keyword)
     album_id = get_album_id(driver, keyword)  
     artist_name, artist_id = get_artist_details(song_id)
 
+    album_title, a_image_url, a_release_date_str = get_album_details(album_id)
+
     if album_id:
-        album_title, a_image_url, a_release_date_str = get_album_details(album_id)
-        
-        if album_id and album_title:
-            insertDB.insert_artist(artist_id, artist_name)
-            insertDB.insert_album(album_id, album_title, artist_id, a_release_date_str, a_image_url)
-            print(f"{keyword}: {album_id} 앨범 INSERT 완료!")
+        # Check if the album already exists in the database
+        if insertDB.album_exists(album_id):  # Assuming `album_exists` is a new function in `insertDB`
+            print(f"{keyword}({album_id}) 앨범이 이미 존재합니다.")
         else:
-            print("해당 앨범을 찾을 수 없습니다.")
+            if album_title:
+                insertDB.insert_artist(artist_id, artist_name)
+                insertDB.insert_album(album_id, album_title, artist_id, a_release_date_str, a_image_url)
+                print(f"{keyword}({album_id}) 앨범 INSERT 완료!")
+            else:
+                print("해당 앨범을 찾을 수 없습니다.")
     else:
         print("Album ID가 제대로 추출되지 않았습니다.")
     

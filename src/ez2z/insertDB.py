@@ -13,6 +13,33 @@ def get_db_connection():
         cursorclass=pymysql.cursors.DictCursor
     )
 
+def album_exists(album_id):
+    # albumID가 데이터베이스에 있는지 체크
+    connection = get_db_connection()
+    with connection.cursor() as cursor:
+        query = "SELECT 1 FROM album WHERE albumID = %s"
+        cursor.execute(query, (album_id,))
+        result = cursor.fetchone()  
+        return result is not None
+    
+def song_exists(song_id):
+    # songID가 데이터베이스에 있는지 체크
+    connection = get_db_connection()
+    with connection.cursor() as cursor:
+        query = "SELECT 1 FROM song WHERE songID = %s"
+        cursor.execute(query, (song_id,))
+        result = cursor.fetchone()  
+        return result is not None
+    
+def artist_exists(artist_id):
+    # artistID가 데이터베이스에 있는지 체크
+    connection = get_db_connection()
+    with connection.cursor() as cursor:
+        query = "SELECT 1 FROM artist WHERE artistID = %s"
+        cursor.execute(query, (artist_id,))
+        result = cursor.fetchone()  
+        return result is not None
+
 # 아티스트와 곡 데이터를 삽입하는 함수
 def insert_artist(artist_id, artist):
     # 데이터베이스 연결

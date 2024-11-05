@@ -2,8 +2,6 @@ import requests
 from bs4 import BeautifulSoup
 from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
-import csv
-import os
 from ids import get_song_id
 import insertDB
 
@@ -23,61 +21,41 @@ def get_artist_details(song_id):
         # 아티스트 ID 추출
         artist_tag = soup.select_one('div.artist a[href*="goArtistDetail"]')
         artist_id = artist_tag['href'].split('(')[1].split(')')[0].replace("'", "") if artist_tag else "Artist ID not found"
-        print(f"Extracted artist ID: {artist_id}")  # artist_id를 출력
-
+    
         # 아티스트 이름 추출
         artist_div = soup.find('div', {'class': 'artist'})
         artist = artist_div.get_text(strip=True).replace("가수명", "") if artist_div else "Artist not found"
-        print(f"Extracted artist : {artist}")  # artist 이름을 출력
         
         return artist, artist_id
 
     else:
         return None, None  # 실패 시 None 반환
 
-def save_artist(artist, artist_id):
-    filename = "artist.csv"
-    
-    # 기존 데이터 확인
-    existing_artist = set()
-    if os.path.exists(filename):
-        with open(filename, mode='r', encoding='utf-8') as file:
-            reader = csv.DictReader(file)
-            for row in reader:
-                existing_artist.add(row['artist_id'])
-    
-    # 중복 확인 후 csv 파일에 저장
-    if artist_id not in existing_artist:
-        with open(filename, mode='a', newline='', encoding='utf-8') as file:
-            writer = csv.writer(file)
-            # 파일이 존재하지 않으면 헤더 추가
-            if os.path.getsize(filename) == 0:
-                writer.writerow(['artist', 'artist_id'])
-            # 새로운 데이터 추가
-            writer.writerow([artist, artist_id])
-            print(f"Added artist {artist} to the CSV file.")
-            print(f"Added artist ID {artist_id} to the CSV file.")
-    else:
-        print(f"{artist} 는 이미 존재하는 아티스트 입니다.")
-
 def main():
     chrome_options = Options()
     driver = webdriver.Chrome(options=chrome_options)
+    from song import get_song_details
 
-    keyword = "bad love"
-    song_id = get_song_id(driver, keyword)  # driver를 인자로 전달
+    keyword = "bad love key"
+    song_id = get_song_id(driver, keyword)  
+    artist, artist_id = get_artist_details(song_id)
+    song_title, _, _, _ = get_song_details(song_id)
+    
     if song_id:
-        artist, artist_id = get_artist_details(song_id)
-        if artist and artist_id:
-            print(f"Data for {keyword}: {artist}, {artist_id}")
-
-            save_artist(artist, artist_id)
-            #insertDB.insert_artist(artist_id, artist)
+        if insertDB.artist_exists(artist_id):
+            print(f"노래 {song_title}의 artist {artist}가 이미 존재합니다.")
         else:
-            print("Artist details not found.")
+            if artist and artist_id:
+                insertDB.insert_artist(artist_id, artist)
+                print(f"노래 {song_title}의 artist {artist} INSERT 완료!")
+            else:
+                print("Artist details not found.")
     else:
         print("Song ID not found.")
     
+    print(f"Extracted artist ID: {artist_id}")  # artist_id를 출력
+    print(f"Extracted artist : {artist}")  # artist 이름을 출력
+
     driver.quit()  # WebDriver 종료
 
 if __name__ == "__main__":
