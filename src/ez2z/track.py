@@ -68,7 +68,7 @@ def main():
 
     try:
         # 키워드로 곡 ID 가져오기
-        keyword = "hands up"
+        keyword = "nct dream 고래"
         song_id = get_song_id(driver, keyword)  # driver를 인자로 전달
         artist_name, artist_id = get_artist_details(song_id)
         album_id = get_album_id(driver, keyword)  
@@ -99,7 +99,13 @@ def main():
                 for track_number, song_id in track_list:
                     insertDB.insert_track(album_id, song_id, track_number)
                     print(f"{album_title}의 {track_number}번 트랙 {song_id} Insert 완료.")
-            
+                        # track_song_id로 song 정보 조회 및 song 테이블에 삽입
+                    
+                    if not insertDB.song_exists(song_id):  # song 테이블에 없으면 삽입
+                        # 트랙 곡의 상세 정보 가져오기
+                        track_song_title, track_release_date, track_lyrics, track_image_url = get_song_details(song_id)
+                        insertDB.insert_song(song_id, track_song_title, album_id, artist_id, track_release_date, track_lyrics, track_image_url)
+                        print(f"트랙 노래 {track_song_title} Insert 완료.")
         else:
             print("Album ID가 제대로 추출되지 않았습니다.")
     finally:
