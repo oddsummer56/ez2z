@@ -39,6 +39,14 @@ def artist_exists(artist_id):
         cursor.execute(query, (artist_id,))
         result = cursor.fetchone()  
         return result is not None
+    
+def track_exists(album_id, song_id):
+    connection = get_db_connection()
+    with connection.cursor() as cursor:
+        query = "SELECT 1 FROM tracklist WHERE albumID = %s AND songID = %s"
+        cursor.execute(query, (album_id, song_id))
+        result = cursor.fetchone()  
+        return result is not None
 
 # 아티스트와 곡 데이터를 삽입하는 함수
 def insert_artist(artist_id, artist):
@@ -137,9 +145,8 @@ def insert_track(album_id, song_id, track_number):
             """
             cursor.execute(sql, (album_id, song_id, track_number))
             connection.commit()
-            print(f"Track {track_number} with song_id {song_id} inserted successfully.")
     except Exception as e:
-        print(f"Failed to insert track {track_number}: {e}")
+        print(f"트랙 INSERT에 실패하였습니다 {track_number}: {e}")
     finally:
         connection.close()
 

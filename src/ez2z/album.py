@@ -20,15 +20,15 @@ def get_album_details(album_id):
     if response.status_code == 200:
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        # 제목 추출
+        # 앨범명 추출
         title_tag = soup.select_one('div.song_name') 
         album_title = title_tag.get_text(strip=True).replace("앨범명", "") if title_tag else "앨범명을 찾을 수 없습니다."
-        print(f"앨범명: {album_title}")  # album_title을 출력
+        print(f"앨범명: {album_title}")  
 
         # 발매일 추출
         release_tag = soup.select_one('div.meta dd:nth-of-type(1)') 
         a_release_year = release_tag.text.strip() if release_tag else "발매일자를 찾을 수 없습니다."
-        print(f"발매년도: {a_release_year}")  # release_year를 출력
+        print(f"앨범 발매일: {a_release_year}")  
 
         # 문자열을 'YYYY-MM-DD' 형식으로 변환
         if a_release_year != "변환하려는 발매일자를 찾을 수 없습니다.":
@@ -37,12 +37,13 @@ def get_album_details(album_id):
         else:
             a_release_date_str = None  # 발매일을 찾을 수 없는 경우 처리   
 
-        print(f"발매년도 {a_release_year} 변환완료! ")  # release_year를 출력
- 
+        print(f"앨범 발매일 {a_release_year} 변환완료! ")  
+
         # 앨범 이미지 추출
         a_image_url_tag = soup.select_one('div.wrap_info div.thumb img') 
         a_image_url = a_image_url_tag.get('src') if a_image_url_tag else "앨범이미지를 찾을 수 없습니다."
-        print(f"앨범이미지 추출완료!")  # album image url을 출력    
+        print(f"앨범이미지 추출완료!") 
+        print(f"===================")
 
         return album_title, a_image_url, a_release_date_str
 
@@ -61,9 +62,9 @@ def main():
     album_title, a_image_url, a_release_date_str = get_album_details(album_id)
 
     if album_id:
-        # Check if the album already exists in the database
-        if insertDB.album_exists(album_id):  # Assuming `album_exists` is a new function in `insertDB`
-            print(f"{keyword}({album_id}) 앨범이 이미 존재합니다.")
+        # DB에 해당 앨범이 있는지 확인
+        if insertDB.album_exists(album_id):  # albumID가 있으면 DB INSERT를 종료 (정보 받아오는걸로 변경?###########################)
+            print(f"{keyword}({album_id}) 앨범이 이미 존재합니다! DB INSERT를 종료합니다.")
         else:
             if album_title:
                 insertDB.insert_artist(artist_id, artist_name)

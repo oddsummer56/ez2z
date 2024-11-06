@@ -11,9 +11,6 @@ def get_song_id(driver, keyword):
     query = f"{keyword}"
     driver.get(f"{base_url}?q={query}")
 
-    # 페이지가 로드되기까지 대기
-    #time.sleep(3)
-
     soup = BeautifulSoup(driver.page_source, 'html.parser')
     
     # 검색된 곡 정보의 리스트에서 첫 번째 곡의 ID를 가져옴
@@ -22,7 +19,7 @@ def get_song_id(driver, keyword):
         # href에서 곡 ID 추출
         href_value = song_info['href']
         song_id = href_value.split('(')[1].split(')')[0].split(',')[-1].strip().replace("'", "")
-        print(f"Extracted song ID: {song_id}")  # song_id를 출력
+        print(f"song ID 추출완료!")  # song_id를 출력
         return song_id
     else:
         return None
@@ -34,20 +31,18 @@ def get_album_id(driver, keyword):
     query = f"{keyword}"
     driver.get(f"{base_url}?q={query}")
 
-    # 페이지가 로드되기까지 대기
-    #time.sleep(3)
-
     soup = BeautifulSoup(driver.page_source, 'html.parser')
 
     # 앨범 ID 추출
-     # 검색된 곡 정보의 리스트에서 첫 번째 곡의 ID를 가져옴
+    # 검색된 곡 정보의 리스트에서 첫 번째 곡의 ID를 가져옴
     album_info = soup.select_one('a[href*="goAlbumDetail"]')
 
     if album_info:
         # href에서 곡 ID 추출
         href_value = album_info['href']
         album_id = href_value.split("goAlbumDetail('")[1].split("')")[0]
-        print(f"Extracted song ID: {album_id}")  # song_id를 출력
+        print(f"album ID 추출완료!")  # album_id를 출력
+        print(f"===================")
         return album_id
     else:
         return None

@@ -29,7 +29,7 @@ def get_artist_details(song_id):
         return artist, artist_id
 
     else:
-        return None, None  # 실패 시 None 반환
+        return None, None  
 
 def main():
     chrome_options = Options()
@@ -41,8 +41,9 @@ def main():
     artist, artist_id = get_artist_details(song_id)
     song_title, _, _, _ = get_song_details(song_id)
     
-    if song_id:
-        if insertDB.artist_exists(artist_id):
+    if artist_id: 
+        # DB에 해당 아티스트가 있는지 확인
+        if insertDB.artist_exists(artist_id): #artistID가 있으면 DB INSERT를 종료 (정보 받아오는걸로 변경?###########################)
             print(f"노래 {song_title}의 artist {artist}가 이미 존재합니다.")
         else:
             if artist and artist_id:
@@ -51,10 +52,10 @@ def main():
             else:
                 print("Artist details not found.")
     else:
-        print("Song ID not found.")
+        print("Artist not found.")
     
-    print(f"Extracted artist ID: {artist_id}")  # artist_id를 출력
-    print(f"Extracted artist : {artist}")  # artist 이름을 출력
+    print(f"Extracted artist ID: {artist_id}") 
+    print(f"Extracted artist : {artist}")  
 
     driver.quit()  # WebDriver 종료
 
