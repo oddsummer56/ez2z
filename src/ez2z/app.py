@@ -63,7 +63,7 @@ def add_song_data(request: SongRequest):
                     track_song_title, track_release_date, track_lyrics, track_image_url = get_song_details(track_song_id)
                     insertDB.insert_song(track_song_id, track_song_title, album_id, artist_id, track_release_date, track_lyrics, track_image_url)
 
-            return {"message": f"{song_title}의 {album_title} 앨범 모든 트랙이 성공적으로 DB에 저장되었습니다."}
+            return {"message": f"{song_title} / {album_title} 앨범의 모든 트랙이 성공적으로 DB에 저장되었습니다."}
 
     finally:
         driver.quit()
