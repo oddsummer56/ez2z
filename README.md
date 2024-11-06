@@ -1,5 +1,5 @@
 # 0.3/api
-FAST API 구현완료
+FastAPI 구현완료
 
 # Swagger UI로 API 요청 방법
 ## 1. FastAPI 실행 
