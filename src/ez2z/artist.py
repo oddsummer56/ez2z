@@ -1,9 +1,5 @@
 import requests
 from bs4 import BeautifulSoup
-from selenium.webdriver.chrome.options import Options
-from selenium import webdriver
-from ids import get_song_id
-import insertDB
 
 def get_artist_details(song_id):
     lyrics_url = f"https://www.melon.com/song/detail.htm?songId={song_id}"
@@ -30,34 +26,3 @@ def get_artist_details(song_id):
 
     else:
         return None, None  
-
-def main():
-    chrome_options = Options()
-    driver = webdriver.Chrome(options=chrome_options)
-    from song import get_song_details
-
-    keyword = "bad love key"
-    song_id = get_song_id(driver, keyword)  
-    artist, artist_id = get_artist_details(song_id)
-    song_title, _, _, _ = get_song_details(song_id)
-    
-    if artist_id: 
-        # DB에 해당 아티스트가 있는지 확인
-        if insertDB.artist_exists(artist_id): #artistID가 있으면 DB INSERT를 종료 (정보 받아오는걸로 변경?###########################)
-            print(f"노래 {song_title}의 artist {artist}가 이미 존재합니다.")
-        else:
-            if artist and artist_id:
-                insertDB.insert_artist(artist_id, artist)
-                print(f"노래 {song_title}의 artist {artist} INSERT 완료!")
-            else:
-                print("Artist details not found.")
-    else:
-        print("Artist not found.")
-    
-    print(f"Extracted artist ID: {artist_id}") 
-    print(f"Extracted artist : {artist}")  
-
-    driver.quit()  # WebDriver 종료
-
-if __name__ == "__main__":
-    main()

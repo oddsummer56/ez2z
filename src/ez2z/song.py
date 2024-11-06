@@ -1,14 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-from selenium.webdriver.chrome.options import Options
-from selenium import webdriver
-import csv
-import os
-from ids import get_song_id, get_album_id
-from artist import get_artist_details
-from album import get_album_details
 from datetime import datetime
-import insertDB
 
 def get_song_details(song_id):
     lyrics_url = f"https://www.melon.com/song/detail.htm?songId={song_id}"
@@ -54,35 +46,3 @@ def get_song_details(song_id):
 
     else:
         return None, None, None, None  # 실패 시 None 반환
-
-def main():
-    chrome_options = Options()
-    driver = webdriver.Chrome(options=chrome_options)
-
-    keyword = "즐거운"
-    song_id = get_song_id(driver, keyword)  
-    artist_name, artist_id = get_artist_details(song_id)
-    album_id = get_album_id(driver, keyword)  
-    album_title, a_image_url, a_release_date_str = get_album_details(album_id)
-    song_title, s_release_date_str, lyrics, s_image_url = get_song_details(song_id)
-    
-    if song_id:
-        # DB에 해당 노래가 있는지 확인
-        if insertDB.song_exists(song_id): #songID가 있으면 DB INSERT를 종료 (정보 받아오는걸로 변경?###########################)
-            print(f"노래 {song_title} 가 이미 존재합니다.")
-        else:
-            if song_id and song_title:
-                print(f"{keyword}({song_id}) 노래 INSERT 완료!")
-                    
-                insertDB.insert_artist(artist_id, artist_name)
-                insertDB.insert_album(album_id, album_title, artist_id, a_release_date_str, a_image_url)
-                insertDB.insert_song(song_id, song_title, album_id, artist_id, s_release_date_str, lyrics, s_image_url)
-            else:
-                print("Error")
-    else:
-        print("Song ID가 제대로 추출되지 않았습니다.")
-    
-    driver.quit()  # WebDriver 종료
-
-if __name__ == "__main__":
-    main()

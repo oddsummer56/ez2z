@@ -1,11 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
-from selenium.webdriver.chrome.options import Options
-from selenium import webdriver
-from ids import get_song_id, get_album_id
-from artist import get_artist_details
 from datetime import datetime
-import insertDB
+
 
 def get_album_details(album_id):
     lyrics_url = f"https://www.melon.com/album/detail.htm?albumId={album_id}"
@@ -50,32 +46,3 @@ def get_album_details(album_id):
     else:
         return None, None, None  # 실패 시 None 반환
 
-def main():
-    chrome_options = Options()
-    driver = webdriver.Chrome(options=chrome_options)
-
-    keyword = "히치하이킹" 
-    song_id = get_song_id(driver, keyword)
-    album_id = get_album_id(driver, keyword)  
-    artist_name, artist_id = get_artist_details(song_id)
-
-    album_title, a_image_url, a_release_date_str = get_album_details(album_id)
-
-    if album_id:
-        # DB에 해당 앨범이 있는지 확인
-        if insertDB.album_exists(album_id):  # albumID가 있으면 DB INSERT를 종료 (정보 받아오는걸로 변경?###########################)
-            print(f"{keyword}({album_id}) 앨범이 이미 존재합니다! DB INSERT를 종료합니다.")
-        else:
-            if album_title:
-                insertDB.insert_artist(artist_id, artist_name)
-                insertDB.insert_album(album_id, album_title, artist_id, a_release_date_str, a_image_url)
-                print(f"{keyword}({album_id}) 앨범 INSERT 완료!")
-            else:
-                print("해당 앨범을 찾을 수 없습니다.")
-    else:
-        print("Album ID가 제대로 추출되지 않았습니다.")
-    
-    driver.quit()  # WebDriver 종료
-
-if __name__ == "__main__":
-    main()

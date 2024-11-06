@@ -2,13 +2,11 @@ import requests
 from bs4 import BeautifulSoup
 from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
-import csv
-import os
-from ids import get_song_id, get_album_id
-from artist import get_artist_details
-from album import get_album_details
-from song import get_song_details
-import insertDB
+from src.ez2z.ids import get_song_id, get_album_id
+from src.ez2z.artist import get_artist_details
+from src.ez2z.album import get_album_details
+from src.ez2z.song import get_song_details
+from src.ez2z import insertDB
 
 def get_track_list(album_id):
     album_url = f"https://www.melon.com/album/detail.htm?albumId={album_id}"
@@ -68,7 +66,7 @@ def main():
 
     try:
         # 키워드로 곡 ID 가져오기
-        keyword = "nct dream 고래"
+        keyword = "어른아이 세븐틴"
         song_id = get_song_id(driver, keyword)  # driver를 인자로 전달
         artist_name, artist_id = get_artist_details(song_id)
         album_id = get_album_id(driver, keyword)  
