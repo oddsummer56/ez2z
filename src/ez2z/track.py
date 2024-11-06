@@ -76,7 +76,6 @@ def main():
         song_title, s_release_date_str, lyrics, s_image_url = get_song_details(song_id)   
         track_list = get_track_list(album_id) # 곡 ID로 트랙 리스트 가져오기
 
-
         if album_id:
             # DB에 해당 트랙리스트가 들어있는지 확인
             if insertDB.track_exists(album_id, song_id): #해당되는 트랙리스트가 있으면 DB INSERT를 종료 (정보 받아오는걸로 변경?###########################)
