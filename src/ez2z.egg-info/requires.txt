@@ -1,4 +1,0 @@
-pymysql>=1.1.1
-selenium>=4.26.1
-bs4>=0.0.2
-requests>=2.32.3
